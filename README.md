@@ -1,14 +1,31 @@
-# read_sr3
-# SR3 Extractor for MATLAB
+### read_sr3
+# SR3 Spatial Extractor (CMG-GEM) — MATLAB
 
-MATLAB utilities for reading and extracting spatial datasets from CMG SR3 restart files (HDF5 format).
+Utilities for reading **CMG-GEM** `.SR3` restart files (HDF5) and extracting **spatial properties** into clean MATLAB matrices for analysis and plotting.
 
-## Features
-- Read all datasets in an SR3 file into a `containers.Map`.
-- Extract `/SpatialProperties/<timestep>/<variable>` into tidy MATLAB matrices.
-- One field per variable (e.g., `DATA.PRES`, `DATA.PH`, `DATA.ACTIVE1`).
-- Columns = timesteps (sorted numerically, empty steps skipped).
-- Handles missing datasets gracefully (fills with NaN).
+Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt University**.
+
+---
+
+## 💡 What this does
+
+- Loads an SR3 (HDF5) file and indexes **all datasets** into a `containers.Map`.
+- Gathers everything under  
+  `/SpatialProperties/<TIMESTEP>/<VARIABLE>`  
+  into MATLAB matrices with **columns = timesteps** and **rows = cells**.
+- Creates a tidy struct:
+  - `DATA.<VAR>` → `[nCells x nSteps]` (e.g., `DATA.PRES`, `DATA.PH`, `DATA.SW`, `DATA.SG`)
+  - `meta` → timestep labels, numeric order, and a table of all spatial paths.
+- Makes variable names MATLAB-safe (e.g., `ACTIV(1)` → `ACTIVE1`).
+
+## 📦 Installation
+
+1) **Download the package**
+Download the repo as a .zip and unzip it locally.
+
+2) **Add src/ to your MATLAB path**
+''' bash
+addpath('src');
 
 ## Usage
 
