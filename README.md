@@ -1,3 +1,4 @@
+# read_sr3
 # SR3 Spatial Extractor (CMG-GEM) — MATLAB
 
 Utilities for reading **CMG-GEM** `.SR3` restart files (HDF5) and extracting **spatial properties** into clean MATLAB matrices for analysis and plotting.
