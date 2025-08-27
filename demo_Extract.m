@@ -1,4 +1,4 @@
-addpath('.../src');
+addpath('src');
 
 % Change file path to your SR3 file
 filePath = 'CASE.sr3';
