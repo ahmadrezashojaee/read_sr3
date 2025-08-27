@@ -1,7 +1,7 @@
 # read_sr3
 # SR3 Spatial Extractor (CMG-GEM) — MATLAB
 
-Utilities for reading **CMG-GEM** `.SR3` restart files (HDF5) and extracting **spatial properties** into clean MATLAB matrices for analysis and plotting.
+Utilities for reading **CMG-GEM** `.sr3` restart files (HDF5) and extracting **spatial properties** into clean MATLAB matrices for analysis and plotting.
 
 Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt University**.
 
@@ -41,14 +41,14 @@ demo_Extract
 ```
 
 2) **What the demo does**
-- Reads `CASE.SR3` (changeable)
+- Reads `CASE.sr3` (changeable)
 - Extracts all `/SpatialProperties/...` datasets
 - Builds `DATA` and `meta`
 
 3) **Use your own SR3**
 Edit the demo and set your file path:
 ```matlab
-filePath = 'MySimulation.SR3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
+filePath = 'MySimulation.sr3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
 ```
 Run the script again:
 ```matlab
@@ -64,7 +64,7 @@ examples/demo_extract
 addpath('src');
 
 % 1) Load SR3 file and index datasets
-[sr3, Paths] = read_SR3('CASE.SR3');
+[sr3, Paths] = read_SR3('CASE.sr3');
 
 % 2) Extract all spatial properties into matrices
 [DATA, meta] = extract_spatial_from_sr3(sr3, Paths);
