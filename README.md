@@ -10,8 +10,17 @@ MATLAB utilities for reading and extracting spatial datasets from CMG SR3 restar
 - Columns = timesteps (sorted numerically, empty steps skipped).
 - Handles missing datasets gracefully (fills with NaN).
 
-## Installation
-Clone this repo and add the `src/` folder to your MATLAB path:
-```matlab
-addpath('src');
+## Usage
+
+% Load SR3 file
+[sr3, Paths] = read_SR3('CASE.SR3');
+
+% Extract all spatial properties
+[DATA, meta] = extract_spatial_from_sr3(sr3, Paths);
+
+% Inspect results
+fieldnames(DATA)          % list of variables
+size(DATA.PRES)           % [nCells x nSteps]
+meta.timesteps_str        % timestep identifiers
+
 
