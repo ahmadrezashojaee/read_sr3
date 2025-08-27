@@ -24,7 +24,7 @@ Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt Universi
 Download the repo as a .zip and unzip it locally.
 
 2) **Add src/ to your MATLAB path**
-''' bash
+```bash
 addpath('src');
 
 ## Usage
