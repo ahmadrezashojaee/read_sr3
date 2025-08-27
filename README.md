@@ -41,14 +41,15 @@ demo_Extract
 ```
 
 2) **What the demo does**
-- Reads `CASE.sr3` (changeable)
+- Copy your SR3 File in the directory.
+- Reads `YourSR3File.sr3` (change it your file name)
 - Extracts all `/SpatialProperties/...` datasets
 - Builds `DATA` and `meta`
 
 3) **Use your own SR3**
 Edit the demo and set your file path:
 ```matlab
-filePath = 'MySimulation.sr3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
+filePath = 'YourSR3File.sr3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
 ```
 Run the script again:
 ```matlab
@@ -64,7 +65,7 @@ examples/demo_extract
 addpath('src');
 
 % 1) Load SR3 file and index datasets
-[sr3, Paths] = read_SR3('CASE.sr3');
+[sr3, Paths] = read_SR3('YourSR3File.sr3');
 
 % 2) Extract all spatial properties into matrices
 [DATA, meta] = extract_spatial_from_sr3(sr3, Paths);
