@@ -22,7 +22,7 @@ Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt Universi
 1. **Download the package**
    - Clone the repository:
      ```bash
-     git clone https://github.com/<your-username>/sr3-extractor.git
+     git clone https://github.com/ahmadrezashojaee/read_sr3.git
      ```
    - Or download it as a `.zip` and unzip locally.
 
