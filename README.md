@@ -46,7 +46,8 @@ demo_Extract
 - Extracts all `/SpatialProperties/...` datasets
 - Builds `DATA` and `meta`
 
-3) **Use your own SR3**
+3) **Use your own SR3** 
+
 Edit the demo and set your file path:
 ```matlab
 filePath = 'YourSR3File.sr3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
