@@ -20,14 +20,20 @@ Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt Universi
 
 ## 📦 Installation
 
-1) **Download the package**
+**Download the package**
 Download the repo as a .zip and unzip it locally.
 
-2) **Add src/ to your MATLAB path**
+## Usage
+
+**Add src/ to your MATLAB path**
+
 ```bash
 addpath('src');
-
-## Usage
+```bash
+Run the demo_Extract.m file.
+```bash
+demo_extract;
+```bash
 
 % Load SR3 file
 [sr3, Paths] = read_SR3('CASE.SR3');
