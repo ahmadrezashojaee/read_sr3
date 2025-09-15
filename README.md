@@ -102,7 +102,7 @@ meta.timesteps_num        % numeric timesteps (sorted)
 
 **Signature**
 ```matlab
-[DATA, meta] = extract_spatial_from_sr3(sr3, Paths)
+[DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
 ```
 
 **Returns**
@@ -118,8 +118,8 @@ meta.timesteps_num        % numeric timesteps (sorted)
 - Uppercase, remove `()[]` and spaces
 - Replace non-alphanumeric with `_`
 - Collapse repeated `_`, trim edges
-- If the name would start with a digit, prefix with `V_`  
-Examples: `ACTIV(1)` → `ACTIVE1`, `X[CO2]` → `X_CO2`
+- If the name would contain digits at the end, it changes with the name of variable.  
+Examples: `ACTIV10` → `ACTIVE_Ca`, `X1` → `X_H2`
 
 ---
 
