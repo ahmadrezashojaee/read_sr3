@@ -5,4 +5,4 @@ addpath('src');
 filePath = 'YourSR3File.sr3';
 
 [sr3, Paths] = read_SR3(filePath);
-[DATA, meta] = extract_spatial_from_sr3(sr3, Paths);
+[DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath);
