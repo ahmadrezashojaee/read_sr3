@@ -69,7 +69,7 @@ addpath('src');
 [sr3, Paths] = read_SR3('YourSR3File.sr3');
 
 % 2) Extract all spatial properties into matrices
-[DATA, meta] = extract_spatial_from_sr3(sr3, Paths);
+[DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath);
 
 % 3) Inspect results
 fieldnames(DATA)          % list of variables (sanitized names)
