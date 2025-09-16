@@ -68,9 +68,9 @@ addpath('src');
 % 1) Load SR3 file and index datasets
 [sr3, Paths] = read_SR3('YourSR3File.sr3');
 
-% 2) Extract all spatial properties into matrices
+% 2) Extract all spatial and well properties into matrices
 [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath);
-
+[WELL_DATA, time_days, time_date, meta_wells] = extract_well_from_sr3(sr3, filePath, 1000);
 % 3) Inspect results
 fieldnames(DATA)          % list of variables (sanitized names)
 size(DATA.PRES)           % -> [nCells x nSteps]
