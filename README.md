@@ -10,11 +10,24 @@ Developed by **Ahmadreza Shojaee** during PhD research at **Heriot-Watt Universi
 ## 💡 What this does
 
 - Loads an SR3 (HDF5) file and indexes **all datasets** into a `containers.Map`.
-- Gathers everything under `/SpatialProperties/<TIMESTEP>/<VARIABLE>` into MATLAB matrices with **columns = timesteps** and **rows = cells**.
-- Produces a tidy struct:
-  - `DATA.<VAR>` → `[nCells x nSteps]` (e.g., `DATA.PRES`, `DATA.PH`, `DATA.SW`, `DATA.SG`)
-  - `meta` → timestep labels (strings & numeric), original variable names, sanitized field names, and a table of all spatial paths.
-- Variable names are made MATLAB-safe (e.g., `ACTIV(1)` → `ACTIVE1`).
+
+- **Spatial Properties Extraction**
+  - Gathers everything under `/SpatialProperties/<TIMESTEP>/<VARIABLE>` into MATLAB matrices with **columns = timesteps** and **rows = cells**.
+  - Produces a tidy struct:
+    - `DATA.<VAR>` → `[nCells x nSteps]` (e.g., `DATA.PRES`, `DATA.PH`, `DATA.SW`, `DATA.SG`)
+    - `meta` → timestep labels (strings & numeric), original variable names, sanitized field names, and a table of all spatial paths.
+  - Variable names ending in numbers (e.g., `ACTIV(1)`, `X1`) are automatically mapped to component names from `/General/ComponentTable` (e.g., `ACTIVE_H2`, `X_CO2`).
+
+- **Well Data Extraction**
+  - Reads `/TimeSeries/WELLS/Data` into MATLAB time series for each well.
+  - Well names are taken from `/TimeSeries/WELLS/Origins`.
+  - Produces a structured output:
+    - `WELL_DATA.<WELL>.<VAR>` → `[nSteps x 1]` (e.g., `WELL_DATA.WELL_A.OILMOLSC_H2`, `WELL_DATA.WELL_A.BHP`)
+    - `time_days` → simulation time in days (double)
+    - `time_date` → simulation time as MATLAB `datetime`
+    - `meta` → original vs renamed variable names, well names, stride info
+  - Variables ending with numbers (e.g., `OILMOLSC1`, `GASMOLSC2`) are automatically renamed with component names (e.g., `OILMOLSC_H2`, `GASMOLSC_CH4`).
+  - Supports **stride sampling** (e.g., import every 100 timesteps) for faster processing of large cases.
 
 
 ## 📦 Installation
