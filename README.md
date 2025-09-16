@@ -130,7 +130,8 @@ sr3-extractor/
 ├── README.md
 ├── src/
 │   ├── read_SR3.m
-│   └── extract_spatial_from_sr3.m
+│   ├── extract_spatial_from_sr3.m
+│   └── extract_well_from_sr3.m
 ├── demo_extract.m
 ```
 
