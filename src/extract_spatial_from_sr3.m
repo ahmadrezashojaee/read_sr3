@@ -1,8 +1,11 @@
-function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
+function [Spatial_DATA,Spatial_time_days, Spatial_time_date, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
 % EXTRACT_SPATIAL_FROM_SR3  
 % Gather all /SpatialProperties/<step>/<var> datasets into matrices.
 % Variables with numeric indices (e.g. MOLAL(1), X1, Y2, Z(3)) are renamed
 % using component names from /General/ComponentTable.
+% 
+% Reported times (days, GEM numeric dates, MATLAB datetime) are extracted
+% from /General/MasterTimeTable based on timestep indices.
 %
 % INPUTS
 %   sr3      : struct from read_SR3 (sr3.data is a containers.Map with HDF5 datasets)
@@ -10,8 +13,11 @@ function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
 %   filePath : path to the SR3 file (needed for reading component names)
 %
 % OUTPUTS
-%   DATA  : struct with one field per variable [nCells x nSteps]
-%   meta  : metadata structure
+%   DATA              : struct with one field per variable [nCells x nSteps]
+%   meta              : metadata structure (timesteps, reported times, varnames, etc.)
+%   Spatial_time_days : reported variables at numeric days format
+%   Spatial_time_date : reported variables at datetime format
+
 
     arguments
         sr3 struct
@@ -59,23 +65,56 @@ function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
     meta.paths_table = table(spPaths(:), stepStr(:), varNames(:), ...
         'VariableNames', {'Path','StepStr','VarName'});
 
-    % Unique timesteps
+    % -------------------------------
+    % STEP 3. Unique timesteps
+    % -------------------------------
     nonEmptyMask = ~cellfun(@isempty, stepStr);
     steps_clean  = stepStr(nonEmptyMask);
     [steps_u, ~, ~] = unique(steps_clean, 'stable');
     steps_u = cellfun(@strtrim, steps_u, 'UniformOutput', false);
     steps_num = str2double(steps_u);
+
     [~, sortOrder] = sortrows([isnan(steps_num), steps_num]);
     meta.timesteps_str = steps_u(sortOrder);
     meta.timesteps_num = steps_num(sortOrder);
 
-    % Unique variables
+    % -------------------------------
+    % STEP 4. Reported times from MasterTimeTable
+    % -------------------------------
+    try
+        tinfo = sr3.data('/General/MasterTimeTable');
+        allDays  = double(tinfo.OffsetInDays);   % includes t=0
+        allDates = double(tinfo.Date);
+
+        % Convert folder index (e.g. '000000') → MasterTimeTable row (+1)
+        stepIdx = str2double(meta.timesteps_str);   % e.g. 0,1,2,...
+        rowIdx  = stepIdx + 1;
+
+        % Map to reported times
+        meta.report_days  = allDays(rowIdx);
+        meta.report_dates = allDates(rowIdx);
+
+        % Convert to datetime
+        intPart  = floor(meta.report_dates);
+        fracPart = meta.report_dates - intPart;
+        dt = datetime(num2str(intPart), 'InputFormat','yyyyMMdd');
+        meta.report_datetime = dt + days(fracPart);
+    catch ME
+        warning('⚠️ Could not extract reported times: %s', ME.message);
+        meta.report_days = [];
+        meta.report_dates = [];
+        meta.report_datetime = [];
+    end
+
+    % -------------------------------
+    % STEP 5. Unique variables
+    % -------------------------------
     [vars_u, ~, var_idx] = unique(varNames, 'stable');
     vars_u = cellfun(@strtrim, vars_u, 'UniformOutput', false);
     meta.var_original = vars_u;
 
     % -------------------------------
-    % STEP 3. Rename variables with component names
+    % STEP 6. Rename variables with component names
     % -------------------------------
     meta.var_fields = vars_u; % start with original
 
@@ -94,7 +133,6 @@ function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
                 newName = base + "_" + cname;
                 meta.var_fields{v} = sanitize_varname(newName);
             else
-                % fallback: sanitize original
                 meta.var_fields{v} = sanitize_varname(baseVar);
             end
         else
@@ -103,15 +141,15 @@ function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
     end
 
     % -------------------------------
-    % STEP 4. Preallocate DATA
+    % STEP 7. Preallocate DATA
     % -------------------------------
-    DATA = struct();
+    Spatial_DATA = struct();
     for v = 1:numel(meta.var_fields)
-        DATA.(meta.var_fields{v}) = nan(0, numel(meta.timesteps_str));
+        Spatial_DATA.(meta.var_fields{v}) = nan(0, numel(meta.timesteps_str));
     end
 
     % -------------------------------
-    % STEP 5. Fill values
+    % STEP 8. Fill values
     % -------------------------------
     for i = 1:n
         vname = strtrim(varNames{i});
@@ -130,22 +168,24 @@ function [DATA, meta] = extract_spatial_from_sr3(sr3, Paths, filePath)
         vec = sr3.data(p);
         vec = vec(:);
 
-        target = DATA.(meta.var_fields{v});
+        target = Spatial_DATA.(meta.var_fields{v});
         nCells = size(target,1);
 
         if nCells == 0
             nCells = numel(vec);
             newMat = nan(nCells, size(target,2));
             newMat(:, c) = vec;
-            DATA.(meta.var_fields{v}) = newMat;
+            Spatial_DATA.(meta.var_fields{v}) = newMat;
         else
             tmp = nan(nCells,1);
             m = min(nCells, numel(vec));
             tmp(1:m) = vec(1:m);
             target(:, c) = tmp;
-            DATA.(meta.var_fields{v}) = target;
+            Spatial_DATA.(meta.var_fields{v}) = target;
         end
     end
+Spatial_time_days = meta.report_days;
+Spatial_time_date = meta.report_datetime;
 end
 
 % ---------- helpers ----------
