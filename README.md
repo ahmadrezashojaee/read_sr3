@@ -65,10 +65,6 @@ Edit the demo and set your file path:
 ```matlab
 filePath = 'YourSR3File.sr3';     % or a full path like 'D:\runs\GEM\MySimulation.SR3'
 ```
-Run the script again:
-```matlab
-examples/demo_extract
-```
 
 ---
 
